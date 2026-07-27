@@ -3,28 +3,31 @@ require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
+  port: 465,
   secure: true,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
-  }
+  },
+  logger: true,
+  debug: true
 });
 
 const sendEmail = async ({ to, subject, html }) => {
   try {
-    const info = await transporter.sendMail({
-      from: `"AutoNest Drive" <${process.env.EMAIL_FROM}>`,
+    await transporter.verify();
+    
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
       to,
       subject,
       html
     });
 
-    console.log('Email sent:', info.messageId);
+    console.log("EMAIL SENT SUCCESSFULLY");
 
   } catch (error) {
-    console.error('Nodemailer Error:', error);
-    throw error;
+    console.log("EMAIL ERROR:", error);
   }
 };
 
