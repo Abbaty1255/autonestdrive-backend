@@ -6,13 +6,11 @@ const helmet = require('helmet');
 
 const app = express();
 
-// Middleware
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 
 try {
@@ -39,7 +37,12 @@ try {
   app.use('/api/contact', require('./routes/contactRoutes'));
 } catch (err) {}
 
-// Home route
+// Test email settings
+console.log("SMTP HOST:", process.env.SMTP_HOST);
+console.log("SMTP PORT:", process.env.SMTP_PORT);
+console.log("SMTP USER:", process.env.SMTP_USER);
+console.log("EMAIL FROM:", process.env.EMAIL_FROM);
+
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -47,7 +50,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -55,7 +57,6 @@ app.use((req, res) => {
   });
 });
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error(err);
 
@@ -65,7 +66,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
